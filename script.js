@@ -295,6 +295,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicia la rotación de imágenes del hero
     startHeroRotation();
     
+    // Inicializar eventos de click en las tarjetas de producto
+    initProductCards();
+    
     // Animación de aparición al hacer scroll (opcional)
     const observerOptions = {
         threshold: 0.1,
@@ -320,6 +323,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Función para inicializar eventos de click en las tarjetas de producto
+function initProductCards() {
+    const productCards = document.querySelectorAll('.producto-card');
+    
+    productCards.forEach(card => {
+        // Agregar evento de click al card completo
+        card.addEventListener('click', function(event) {
+            // No abrir el modal si se hace click en el botón de agregar al carrito
+            if (event.target.closest('.btn-add-cart')) {
+                return;
+            }
+            
+            // Abrir modal con los datos del producto
+            const productData = getProductDataFromCard(this);
+            openProductModal(productData);
+        });
+        
+        // Prevenir que el click en el botón propague al card
+        const addButton = card.querySelector('.btn-add-cart');
+        if (addButton) {
+            addButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+            });
+        }
+    });
+}
+
 // Pausa la rotación cuando el usuario no está en la página (optimización)
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
@@ -332,6 +362,25 @@ document.addEventListener('visibilitychange', () => {
 // ========== FUNCIONES DE FILTRADO PARA TIENDA ==========
 
 let currentCategory = 'todos';
+
+// Detectar categoría desde URL al cargar la página
+function detectCategoryFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoria = urlParams.get('categoria');
+    
+    if (categoria) {
+        // Buscar el botón de la categoría
+        const categoryBtn = document.querySelector(`.filter-btn[data-category="${categoria}"]`);
+        if (categoryBtn) {
+            filterByCategory(categoria, categoryBtn);
+        }
+    }
+}
+
+// Ejecutar al cargar la página de tienda
+if (window.location.pathname.includes('tienda.html')) {
+    window.addEventListener('DOMContentLoaded', detectCategoryFromURL);
+}
 
 // Filtrar por categoría
 function filterByCategory(category, button) {
@@ -462,6 +511,9 @@ if (document.readyState === 'loading') {
 
 // ========== MODAL DE VIDEO DE INSTAGRAM ==========
 
+// Variable global para almacenar los datos del producto actual en el modal
+let currentProductData = null;
+
 // Función para abrir el modal con el video de Instagram
 function openVideoModal(embedUrl) {
     const modal = document.getElementById('video-modal');
@@ -512,8 +564,122 @@ function closeVideoModal() {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeVideoModal();
+        closeProductModal();
     }
 });
+
+// ========== MODAL DE PRODUCTO ==========
+
+// Función para abrir el modal de producto
+function openProductModal(productData) {
+    const modal = document.getElementById('product-modal');
+    if (!modal) return;
+    
+    // Guardar datos del producto actual
+    currentProductData = productData;
+    
+    // Actualizar contenido del modal
+    const modalIcon = document.getElementById('modal-product-icon');
+    const modalBadge = document.getElementById('modal-product-badge');
+    const modalTitle = document.getElementById('modal-product-title');
+    const modalDescription = document.getElementById('modal-product-description');
+    const modalPrecioAnterior = document.getElementById('modal-precio-anterior');
+    const modalPrecioActual = document.getElementById('modal-precio-actual');
+    const modalAddBtn = document.getElementById('modal-add-to-cart-btn');
+    
+    // Actualizar icono
+    if (modalIcon) {
+        modalIcon.textContent = productData.icon || 'shopping_bag';
+    }
+    
+    // Actualizar badge (si existe)
+    if (modalBadge) {
+        if (productData.badge) {
+            modalBadge.textContent = productData.badge;
+            modalBadge.style.display = 'inline-block';
+        } else {
+            modalBadge.style.display = 'none';
+        }
+    }
+    
+    // Actualizar título
+    if (modalTitle) {
+        modalTitle.textContent = productData.name;
+    }
+    
+    // Actualizar descripción
+    if (modalDescription) {
+        modalDescription.textContent = productData.description;
+    }
+    
+    // Actualizar precios
+    if (modalPrecioAnterior && modalPrecioActual) {
+        if (productData.oldPrice) {
+            modalPrecioAnterior.textContent = `$${productData.oldPrice.toLocaleString('es-AR')}`;
+            modalPrecioAnterior.style.display = 'inline-block';
+        } else {
+            modalPrecioAnterior.style.display = 'none';
+        }
+        modalPrecioActual.textContent = `$${productData.price.toLocaleString('es-AR')}`;
+    }
+    
+    // Configurar botón de agregar al carrito
+    if (modalAddBtn) {
+        modalAddBtn.onclick = function() {
+            addToCart(productData.name, productData.price);
+            closeProductModal();
+        };
+    }
+    
+    // Mostrar el modal
+    modal.classList.add('active');
+    
+    // Prevenir scroll del body
+    document.body.style.overflow = 'hidden';
+}
+
+// Función para cerrar el modal de producto
+function closeProductModal() {
+    const modal = document.getElementById('product-modal');
+    
+    if (!modal) return;
+    
+    // Ocultar el modal
+    modal.classList.remove('active');
+    
+    // Limpiar datos del producto actual
+    currentProductData = null;
+    
+    // Restaurar scroll del body
+    document.body.style.overflow = '';
+}
+
+// Función para extraer datos del producto desde el card
+function getProductDataFromCard(card) {
+    // Obtener información del card
+    const badge = card.querySelector('.producto-badge');
+    const icon = card.querySelector('.producto-icon');
+    const title = card.querySelector('h4');
+    const description = card.querySelector('.producto-desc');
+    const precioAnterior = card.querySelector('.precio-anterior');
+    const precioActual = card.querySelector('.precio-actual');
+    
+    // Extraer precio sin formato
+    const priceText = precioActual ? precioActual.textContent.replace(/[$,.]/g, '').trim() : '0';
+    const price = parseInt(priceText) || 0;
+    
+    const oldPriceText = precioAnterior ? precioAnterior.textContent.replace(/[$,.]/g, '').trim() : null;
+    const oldPrice = oldPriceText ? (parseInt(oldPriceText) || null) : null;
+    
+    return {
+        name: title ? title.textContent.trim() : 'Producto',
+        description: description ? description.textContent.trim() : '',
+        price: price,
+        oldPrice: oldPrice,
+        badge: badge ? badge.textContent.trim() : null,
+        icon: icon ? icon.textContent.trim() : 'shopping_bag'
+    };
+}
 
 // ========== FUNCIONES PARA NUEVAS SECCIONES ==========
 
@@ -866,4 +1032,25 @@ function toggleFaq(button) {
     } else {
         icon.style.transform = 'rotate(0deg)';
     }
+}
+
+// ========== OCULTAR PANEL DE CATEGORÍAS AL HACER SCROLL ==========
+
+let lastScrollTop = 0;
+const categoriesPanel = document.querySelector('.categories-panel');
+
+if (categoriesPanel) {
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            // Scroll hacia abajo - ocultar panel
+            categoriesPanel.classList.add('hidden');
+        } else {
+            // Scroll hacia arriba - mostrar panel
+            categoriesPanel.classList.remove('hidden');
+        }
+        
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    }, false);
 }

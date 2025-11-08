@@ -54,6 +54,34 @@
         </div>
     </div>
 
+    <!-- Modal de Producto -->
+    <div id="product-modal" class="product-modal">
+        <div class="product-modal-overlay" onclick="closeProductModal()"></div>
+        <div class="product-modal-content">
+            <button class="close-product-modal" onclick="closeProductModal()">
+                <i class="material-icons">close</i>
+            </button>
+            <div class="product-modal-body">
+                <div class="product-modal-image">
+                    <i id="modal-product-icon" class="material-icons producto-icon"></i>
+                    <span id="modal-product-badge" class="producto-badge" style="display: none;"></span>
+                </div>
+                <div class="product-modal-info">
+                    <h3 id="modal-product-title"></h3>
+                    <p id="modal-product-description" class="modal-product-desc"></p>
+                    <div class="modal-product-precio">
+                        <span id="modal-precio-anterior" class="precio-anterior" style="display: none;"></span>
+                        <span id="modal-precio-actual" class="precio-actual"></span>
+                    </div>
+                    <button id="modal-add-to-cart-btn" class="btn-add-cart-modal">
+                        <i class="material-icons">add_shopping_cart</i>
+                        Agregar al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header class="header-modern">
         <div class="container-header">
             <div class="logo-container">

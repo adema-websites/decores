@@ -67,6 +67,34 @@
         </div>
     </div>
 
+    <!-- Modal de Producto -->
+    <div id="product-modal" class="product-modal">
+        <div class="product-modal-overlay" onclick="closeProductModal()"></div>
+        <div class="product-modal-content">
+            <button class="close-product-modal" onclick="closeProductModal()">
+                <i class="material-icons">close</i>
+            </button>
+            <div class="product-modal-body">
+                <div class="product-modal-image">
+                    <i id="modal-product-icon" class="material-icons producto-icon"></i>
+                    <span id="modal-product-badge" class="producto-badge" style="display: none;"></span>
+                </div>
+                <div class="product-modal-info">
+                    <h3 id="modal-product-title"></h3>
+                    <p id="modal-product-description" class="modal-product-desc"></p>
+                    <div class="modal-product-precio">
+                        <span id="modal-precio-anterior" class="precio-anterior" style="display: none;"></span>
+                        <span id="modal-precio-actual" class="precio-actual"></span>
+                    </div>
+                    <button id="modal-add-to-cart-btn" class="btn-add-cart-modal">
+                        <i class="material-icons">add_shopping_cart</i>
+                        Agregar al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header class="header-modern">
         <div class="container-header">
             <div class="logo-container">
@@ -75,14 +103,9 @@
             <nav id="main-nav">
                 <a href="#inicio" class="nav-link">Inicio</a>
                 <a href="#tienda" class="nav-link">Tienda</a>
-                <a href="#combos" class="nav-link">Combos</a>
                 <a href="#nosotros" class="nav-link">Nosotros</a>
-                <a href="#entrega" class="nav-link">Entrega</a>
-                <a href="#pagos" class="nav-link">Pagos</a>
                 <a href="#calculadora" class="nav-link">Calculadora</a>
                 <a href="#profesionales" class="nav-link">Profesionales</a>
-                <a href="#testimonios" class="nav-link">Testimonios</a>
-                <a href="#faq" class="nav-link">FAQ</a>
                 <a href="#contacto" class="nav-link">Contacto</a>
             </nav>
             <button class="nav-toggle" onclick="toggleMenu()">
@@ -90,6 +113,36 @@
             </button>
         </div>
     </header>
+
+    <!-- Panel de Categorías -->
+    <section class="categories-panel">
+        <div class="categories-panel-container">
+            <a href="tienda.html?categoria=sanitarios" class="category-panel-item">
+                <i class="material-icons">bathtub</i>
+                <span>Sanitarios</span>
+            </a>
+            <a href="tienda.html?categoria=materiales" class="category-panel-item">
+                <i class="material-icons">construction</i>
+                <span>Materiales</span>
+            </a>
+            <a href="tienda.html?categoria=pisos" class="category-panel-item">
+                <i class="material-icons">square_foot</i>
+                <span>Pisos</span>
+            </a>
+            <a href="tienda.html?categoria=griferia" class="category-panel-item">
+                <i class="material-icons">water_drop</i>
+                <span>Grifería</span>
+            </a>
+            <a href="tienda.html?categoria=muebles" class="category-panel-item">
+                <i class="material-icons">countertops</i>
+                <span>Muebles</span>
+            </a>
+            <a href="tienda.html?categoria=aberturas" class="category-panel-item">
+                <i class="material-icons">door_sliding</i>
+                <span>Aberturas</span>
+            </a>
+        </div>
+    </section>
 
     <main>
         <section id="inicio" class="hero-modern">
@@ -344,7 +397,7 @@
                     </a>
                 </div>
                 
-                <!-- Porcelanatos -->
+                <!-- 
                 <div class="instagram-card-wrapper">
                     <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DOjmnZiDHY6/" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
                         <div style="padding:16px;" onclick="openVideoModal('https://www.instagram.com/p/DOjmnZiDHY6/embed')" class="instagram-video-preview">
@@ -359,7 +412,7 @@
                     </a>
                 </div>
 
-                <!-- Tanques de Plástico -->
+       
                 <div class="instagram-card-wrapper">
                     <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DOcPuD2gIF6/" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
                         <div style="padding:16px;" onclick="openVideoModal('https://www.instagram.com/p/DOcPuD2gIF6/embed')" class="instagram-video-preview">
@@ -374,7 +427,7 @@
                     </a>
                 </div>
 
-                <!-- Volquetes -->
+          
                 <div class="instagram-card-wrapper">
                     <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DNitzJDgBWO/" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);">
                         <div style="padding:16px;" onclick="openVideoModal('https://www.instagram.com/p/DNitzJDgBWO/embed')" class="instagram-video-preview">
@@ -387,7 +440,7 @@
                         <i class="material-icons">open_in_new</i>
                         Ir a Instagram
                     </a>
-                </div>
+                </div> -->
             </div>
             <div class="section-cta">
                 <a href="https://www.instagram.com/decoresmateriales" target="_blank" class="btn-outline-primary">
